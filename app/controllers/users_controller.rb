@@ -5,11 +5,18 @@ class UsersController < ApplicationController
     end
 
     def create
-        @user = User.new(params[:user])
+        @user = User.new(user_params) ## Invoke user_params method
         if @user.save
-            redirect_to root_url, notice:"Thank you for signing up!"
+            session[:user_id] = @user.id
+            redirect_to root_url, notice: 'User was successfully created.' 
         else
-            render "new"
-        end
+            render action: 'new'
+        end       
+    end
+
+    private
+    ## Strong Parameters 
+    def user_params
+        params.require(:user).permit(:email, :password, :password_confirmation)
     end
 end
